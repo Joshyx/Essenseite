@@ -1,3 +1,3 @@
 export default function Hello(param: {name: string}) {
-    return <div>Halloasdasd {param.name}</div>
+    return <div>Hallo {param.name}</div>
 }
