@@ -3,8 +3,8 @@
 import {deleteCookie} from "@/scripts/cookies";
 
 export default function LogoutButton() {
-    return <button className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition" onClick={logout}>
-        Logout
+    return <button className="w-full py-2 px-4 text-white border-2 font-semibold rounded-xl cursor-pointer" onClick={logout}>
+        Abmelden
     </button>
 }
 
