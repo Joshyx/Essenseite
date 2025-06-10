@@ -1,4 +1,5 @@
-export default function ZutatPanel(params: { zutat: Record<string, any> }) {
+export default function ZutatPanel(params: { zutat: Record<string, any>, recipes: string[] | undefined }) {
+    if(params.recipes?.length === 0) params.recipes.push("keinem Rezept")
     return (
         <div className="border rounded-lg p-4 shadow-md">
             <h2 className="text-xl font-bold">{params.zutat.Name}</h2>
@@ -8,6 +9,7 @@ export default function ZutatPanel(params: { zutat: Record<string, any> }) {
             <p className="text-gray-700">Kohlenhydrate: {params.zutat.Kohlenhydrate}g</p>
             <p className="text-gray-700 pl-5">Davon Zucker: {params.zutat.Zucker}g</p>
             <p className="text-gray-700">Eiweiß: {params.zutat.Eiweiß}g</p>
+            {params.recipes && <p className="text-gray-700 font-semibold">Vorhanden in {params.recipes.join(", ").replace(/, ([^,]*)$/, ' und $1')}</p>}
         </div>
     )
 }

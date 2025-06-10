@@ -2,9 +2,10 @@
 
 import {FormEvent, useState} from "react";
 import {query} from "@/scripts/query";
-import {getCookie} from "@/scripts/cookies";
 import Link from "next/link";
 import {redirect} from "next/navigation";
+import NavigationBar from "@/components/NavigationBar";
+import {getUserNameClientSide, randomInt} from "@/scripts/utils";
 
 export default function NewRecipePage() {
     const [title, setTitle] = useState('');
@@ -41,7 +42,13 @@ export default function NewRecipePage() {
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
 
-        let username = (await getCookie("username"))!
+        let username = getUserNameClientSide(document)
+        if(!username) {
+            const users = (await query(`SELECT * FROM "Nutzer"`))
+            const randomUser = users[randomInt(0, users.length - 1)]
+            username = randomUser.Nutzername
+            confirm(`Da du nicht angemeldet bist, wird dein Rezept stattdessen zufällig dem Nutzer ${username} zugeordnet`)
+        }
         let UID = (await query(`SELECT "ID"
                                 FROM "Nutzer"
                                 WHERE "Nutzername" = '${username}'`))[0].ID
@@ -68,7 +75,8 @@ export default function NewRecipePage() {
 
     return (
         <>
-            <main className="container mx-auto mt-16 p-4">
+            <NavigationBar username={getUserNameClientSide(document)}/>
+            <main className="container mx-auto p-4">
                 <form onSubmit={handleSubmit} className="max-w-2xl mx-auto">
                     <h1 className="text-3xl font-bold mb-4 text-center">Neues Rezept erstellen</h1>
                     <div className="mb-4">
@@ -82,6 +90,7 @@ export default function NewRecipePage() {
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                             required
+                            autoFocus
                         />
                     </div>
                     <div className="mb-4">
@@ -183,10 +192,4 @@ export default function NewRecipePage() {
         </>
     );
 };
-
-function randomInt(min: number, max: number) {
-    const minCeiled = Math.ceil(min);
-    const maxFloored = Math.floor(max);
-    return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled); // The maximum is inclusive and the minimum is inclusive
-}
 

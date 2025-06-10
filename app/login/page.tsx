@@ -1,29 +1,33 @@
 'use client';
 
-import { useState } from 'react';
+import {useState} from 'react';
 import {query} from "@/scripts/query";
 import {redirect} from "next/navigation";
-import {getCookie, setCookie} from "@/scripts/cookies";
+import NavigationBar from "@/components/NavigationBar";
+import {getUserNameClientSide} from "@/scripts/utils";
+import {setCookie} from "@/scripts/cookies";
 
 export default function LoginPage() {
-    getCookie("username").then(username => {
-        if(username) {
-            redirect("/")
-        }
-    })
+    const user = getUserNameClientSide(document)
+    if (user) {
+        redirect("/")
+    }
+
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         // Here you would call your login API
-        let result = (await query(`SELECT "Nutzername" FROM "Nutzer" WHERE "Passwort"='${password}';`))
+        let result = (await query(`SELECT "Nutzername"
+                                   FROM "Nutzer"
+                                   WHERE "Passwort" = '${password}';`))
 
-        if(result.length === 0) {
+        if (result.length === 0) {
             alert("Nutzername oder Passwort falsch.")
             return;
         }
-        if(result[0].Nutzername != username) {
+        if (result[0].Nutzername != username) {
             alert(`Passwort ist falsch. Dieses gehört zu Nutzer ${result[0].Nutzername}`)
             return;
         }
@@ -32,42 +36,46 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <form
-                onSubmit={handleSubmit}
-                className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md space-y-6"
-            >
-                <h2 className="text-2xl font-bold text-center">Login</h2>
-
-                <div>
-                    <label className="block text-sm font-medium text-gray-700">Nutzername</label>
-                    <input
-                        type="text"
-                        className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium text-gray-700">Passwort</label>
-                    <input
-                        type="password"
-                        className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
-
-                <button
-                    type="submit"
-                    className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition"
+        <>
+            <NavigationBar username={getUserNameClientSide(document)}/>
+            <div className="mt-16 min-h-screen flex justify-center">
+                <form
+                    onSubmit={handleSubmit}
+                    className="bg-white w-full max-w-md space-y-6"
                 >
-                    Anmelden
-                </button>
-            </form>
-        </div>
+                    <h2 className="text-2xl font-bold text-center">Login</h2>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Nutzername</label>
+                        <input
+                            type="text"
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
+                            autoFocus
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Passwort</label>
+                        <input
+                            type="password"
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <button
+                        type="submit"
+                        className="w-full py-2 px-4 bg-gray-800 text-white font-semibold rounded-xl hover:bg-gray-900 transition cursor-pointer"
+                    >
+                        Anmelden
+                    </button>
+                </form>
+            </div>
+        </>
     );
 }
