@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Rezept-App",
+  title: "Essenseite",
   description: "Rezepteee",
 };
 

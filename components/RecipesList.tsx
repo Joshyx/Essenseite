@@ -2,8 +2,6 @@
 
 import RecipePanel from "@/components/RecipePanel";
 import {useState} from "react";
-import {deleteAll, importRecipes} from "@/scripts/utils";
-import CategoryDropdown from "@/components/CategoryDropdown";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faSortDown} from "@fortawesome/free-solid-svg-icons";
 
@@ -79,7 +77,7 @@ export default function RecipesList(params: {
                         onChange={(e) => {setCategory(e.target.value)}}
                     >
                         <option>Alle</option>
-                        <option>Abendessen</option>
+                        <option>Hauptgericht</option>
                         <option>Vorspeise</option>
                         <option>Nachtisch</option>
                         <option>Getränke</option>

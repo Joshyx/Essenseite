@@ -2,7 +2,6 @@ import {query} from "@/scripts/query";
 import NavigationBar from "@/components/NavigationBar";
 import {getCookie} from "@/scripts/cookies";
 import RecipesList from "@/components/RecipesList";
-import {importRecipes} from "@/scripts/utils";
 
 export default async function Home() {
     const recipes = await query('SELECT * FROM "Rezepte"')
