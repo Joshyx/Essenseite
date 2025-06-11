@@ -26,7 +26,8 @@ export default function RecipesList(params: {
         if (re.Vegan !== "true" && onlyVegan) return false
         if (re.Kategorie !== category && category !== 'Alle') return false
         if (search && !(re.Name.toLowerCase().includes(search.toLowerCase())
-            || re.Beschreibung.toLowerCase().includes(search.toLowerCase())))
+            || re.Beschreibung.toLowerCase().includes(search.toLowerCase())
+            || re.ErstellerName.toLowerCase().includes(search.toLowerCase())))
             return false
 
         return true

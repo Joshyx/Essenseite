@@ -63,14 +63,19 @@ export default function RecipePanel({recipe, uid, fav}: {
                     </div>
                     <p className="text-gray-700">{recipe.Beschreibung}</p>
                 </div>
-                <div className="flex justify-end items-center space-x-2">
-                    <div>{likeCounter}</div>
-                    {isFavourite
-                        ?
-                        <FontAwesomeIcon onClick={toggleFavourite} icon={faThumpsDownSolid}
-                                         className="float-end text-red-950"/>
-                        : <FontAwesomeIcon onClick={toggleFavourite} icon={faThumpsDownRegular} className="float-end"/>
-                    }
+                <div className="flex justify-between">
+                    <div>
+                        <p className="text-gray-700 font-semibold">{recipe.ErstellerName}</p>
+                    </div>
+                    <div className="flex justify-end items-center space-x-2">
+                        <div>{likeCounter}</div>
+                        {isFavourite
+                            ?
+                            <FontAwesomeIcon onClick={toggleFavourite} icon={faThumpsDownSolid}
+                                             className="float-end text-red-950"/>
+                            : <FontAwesomeIcon onClick={toggleFavourite} icon={faThumpsDownRegular} className="float-end"/>
+                        }
+                    </div>
                 </div>
             </Link>
         </div>

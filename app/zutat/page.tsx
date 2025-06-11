@@ -4,7 +4,6 @@ import React, {useEffect, useState} from 'react';
 import NavigationBar from '@/components/NavigationBar';
 import {query} from "@/scripts/query";
 import ZutatPanel from "@/components/ZutatPanel";
-import {getUserNameClientSide} from "@/scripts/utils";
 
 export default function Zutaten() {
     const [ingredients, setIngredients] = useState<Record<string, any>[]>([])
