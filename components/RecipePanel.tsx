@@ -2,28 +2,25 @@
 
 import Link from "next/link";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faHeart as faHeartSolid} from "@fortawesome/free-solid-svg-icons";
-import {faHeart as faHeartRegular} from "@fortawesome/free-regular-svg-icons";
+import {faLeaf, faThumbsDown as faThumpsDownSolid} from "@fortawesome/free-solid-svg-icons";
+import {faThumbsDown as faThumpsDownRegular} from "@fortawesome/free-regular-svg-icons";
 import {useEffect, useState} from "react";
 import {query} from "@/scripts/query";
 
-export default function RecipePanel(params: {
-    id: number,
-    name: string,
-    description: string,
-    length: number,
-    fav: boolean,
+export default function RecipePanel({recipe, uid, fav}: {
+    recipe: Record<string, any>,
     uid: string | undefined,
+    fav: boolean,
 }) {
-    const [isFavourite, setFavourite] = useState(params.fav)
+    const [isFavourite, setFavourite] = useState(fav)
     const [likeCounter, setLikeCounter] = useState(0)
 
     // @ts-ignore
     function toggleFavourite(e: MouseEvent<SVGSVGElement, MouseEvent>) {
         e.preventDefault()
 
-        if (!params.uid) {
-            alert("Melde dich an, um etwas zu liken")
+        if (!uid) {
+            alert("Melde dich an, um etwas zu hassen")
             return
         }
 
@@ -31,39 +28,48 @@ export default function RecipePanel(params: {
 
         if (!isFavourite) {
             query(`INSERT INTO "LieblingsRezepte" ("Nutzer", "Rezept")
-                   VALUES ('${params.uid}', '${params.id}')`)
+                   VALUES ('${uid}', '${recipe.RID}')`)
         } else {
             query(`DELETE
                    FROM "LieblingsRezepte"
-                   WHERE "Nutzer" = '${params.uid}'
-                     AND "Rezept" = '${params.id}'`)
+                   WHERE "Nutzer" = '${uid}'
+                     AND "Rezept" = '${recipe.RID}'`)
         }
-        query(`SELECT COUNT(*) AS "COUNT" FROM "LieblingsRezepte" WHERE "Rezept"='${params.id}'`).then((res) => {
+        query(`SELECT COUNT(*) AS "COUNT"
+               FROM "LieblingsRezepte"
+               WHERE "Rezept" = '${recipe.RID}'`).then((res) => {
             setLikeCounter(res[0].COUNT)
         })
     }
+
     useEffect(() => {
-        query(`SELECT COUNT(*) AS "COUNT" FROM "LieblingsRezepte" WHERE "Rezept"='${params.id}'`).then((res) => {
+        query(`SELECT COUNT(*) AS "COUNT"
+               FROM "LieblingsRezepte"
+               WHERE "Rezept" = '${recipe.RID}'`).then((res) => {
             setLikeCounter(res[0].COUNT)
         })
     }, [setLikeCounter])
 
     return (
         <div className="border rounded-lg p-4 shadow-md">
-            <Link href={`/recipes/${params.id}`} className="flex flex-col justify-between h-full">
+            <Link href={`/recipes/${recipe.RID}`} className="flex flex-col justify-between h-full">
                 <div>
                     <div className="flex justify-between">
-                        <h2 className="text-xl font-bold">{params.name}</h2>
-                        <p className="text-gray-700 align-middle">{params.length}min</p>
+                        <h2 className="text-xl font-bold">{recipe.Name}</h2>
+                        <div className="flex justify-end items-center space-x-2">
+                            {recipe.Vegan === "true" && <FontAwesomeIcon icon={faLeaf} />}
+                            <p className="text-gray-700 align-middle">{recipe.Dauer}min</p>
+                        </div>
                     </div>
-                    <p className="text-gray-700">{params.description}</p>
+                    <p className="text-gray-700">{recipe.Beschreibung}</p>
                 </div>
                 <div className="flex justify-end items-center space-x-2">
                     <div>{likeCounter}</div>
                     {isFavourite
                         ?
-                        <FontAwesomeIcon onClick={toggleFavourite} icon={faHeartSolid} className="float-end text-red-500"/>
-                        : <FontAwesomeIcon onClick={toggleFavourite} icon={faHeartRegular} className="float-end"/>
+                        <FontAwesomeIcon onClick={toggleFavourite} icon={faThumpsDownSolid}
+                                         className="float-end text-red-950"/>
+                        : <FontAwesomeIcon onClick={toggleFavourite} icon={faThumpsDownRegular} className="float-end"/>
                     }
                 </div>
             </Link>

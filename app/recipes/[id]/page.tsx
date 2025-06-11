@@ -8,6 +8,7 @@ import {getCookie} from "@/scripts/cookies";
 import DeleteRecipeButton from "@/components/DeleteRecipeButton";
 import ZutatPanel from "@/components/ZutatPanel";
 import AboutAuthorPanel from "@/components/AboutAuthorPanel";
+import Link from 'next/link';
 
 export default async function RecipeDetail({params}: {params: Promise<{id: string}>}) {
     const id = (await params).id
@@ -60,11 +61,17 @@ export default async function RecipeDetail({params}: {params: Promise<{id: strin
                     </div>
                 </div>
                 <div>
-                    <ZutatPanel zutat={totalNutritionalValue} recipes={undefined}/>
+                    <ZutatPanel zutat={totalNutritionalValue} />
                     <AboutAuthorPanel author={user}/>
-                    {(await getCookie("username")) == user.Nutzername &&
-                        <DeleteRecipeButton id={id}/>
-                    }
+                    <div className="flex justify-end space-x-3 items-center">
+                        <Link
+                            href="/"
+                            className="float-end py-2 px-4 mt-8 bg-gray-950 text-white rounded-xl cursor-pointer"
+                        >Zurück</Link>
+                        {(await getCookie("username")) == user.Nutzername &&
+                            <DeleteRecipeButton id={id}/>
+                        }
+                    </div>
                 </div>
             </main>
         </div>

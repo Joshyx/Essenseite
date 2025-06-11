@@ -6,6 +6,7 @@ import Link from "next/link";
 import {redirect} from "next/navigation";
 import NavigationBar from "@/components/NavigationBar";
 import {getUserNameClientSide, randomInt} from "@/scripts/utils";
+import CategoryDropdown from "@/components/CategoryDropdown";
 
 export default function NewRecipePage() {
     const [title, setTitle] = useState('');
@@ -13,6 +14,8 @@ export default function NewRecipePage() {
     const [ingredients, setIngredients] = useState([['', '']]);
     const [instructions, setInstructions] = useState(['']);
     const [length, setLength] = useState(0);
+    const [category, setCategory] = useState('Abendessen')
+    const [vegan, setVegan] = useState(true)
 
     const handleAddIngredient = () => {
         setIngredients([...ingredients, ['', '']]);
@@ -43,8 +46,9 @@ export default function NewRecipePage() {
         e.preventDefault();
 
         let username = getUserNameClientSide(document)
-        if(!username) {
-            const users = (await query(`SELECT * FROM "Nutzer"`))
+        if (!username) {
+            const users = (await query(`SELECT *
+                                        FROM "Nutzer"`))
             const randomUser = users[randomInt(0, users.length - 1)]
             username = randomUser.Nutzername
             confirm(`Da du nicht angemeldet bist, wird dein Rezept stattdessen zufällig dem Nutzer ${username} zugeordnet`)
@@ -55,19 +59,27 @@ export default function NewRecipePage() {
 
         const instructionsText = instructions.join("SEPERATOR")
 
-        let recipeID = (await query(`INSERT INTO "Rezepte" ("Ersteller", "Erstellt", "Dauer", "Zubereitung", "Beschreibung", "Name")
-                     VALUES (${UID}, '${new Date().toISOString()}', ${length}, '${instructionsText}', '${description}',
-                             '${title}') RETURNING "RID"`))[0].RID
+        let recipeID = (await query(`INSERT INTO "Rezepte" ("Ersteller", "Erstellt", "Dauer", "Zubereitung",
+                                                            "Beschreibung", "Name", "Kategorie", "Vegan")
+                                     VALUES (${UID}, '${new Date().toISOString()}', ${length}, '${instructionsText}',
+                                             '${description}',
+                                             '${title}', '${category}', '${vegan}') RETURNING "RID"`))[0].RID
 
         for (const ingredient of ingredients) {
 
-            let dbIngredientId: string = (await query(`SELECT * FROM "Zutaten" WHERE "Name"='${ingredient[1]}'`))?.[0]?.ZID
-            if(!dbIngredientId) {
-                dbIngredientId = (await query(`INSERT INTO "Zutaten" ("Name", "Zucker", "Eiweiß", "Fett", "Gesättigte", "Kalorien", "Kohlenhydrate") 
-                                               VALUES ('${ingredient[1]}', '${randomInt(1, 100)}', '${randomInt(1, 100)}', '${randomInt(1, 100)}', '${randomInt(1, 100)}', '${randomInt(1, 100)}', '${randomInt(1, 100)}') RETURNING "ZID"`))[0].ZID
+            let dbIngredientId: string = (await query(`SELECT *
+                                                       FROM "Zutaten"
+                                                       WHERE "Name" = '${ingredient[1]}'`))?.[0]?.ZID
+            if (!dbIngredientId) {
+                dbIngredientId = (await query(`INSERT INTO "Zutaten" ("Name", "Zucker", "Eiweiß", "Fett", "Gesättigte",
+                                                                      "Kalorien", "Kohlenhydrate")
+                                               VALUES ('${ingredient[1]}', '${randomInt(1, 100)}', '${randomInt(1, 100)}
+                                                       ', '${randomInt(1, 100)}', '${randomInt(1, 100)}',
+                                                       '${randomInt(1, 100)}', '${randomInt(1, 100)}
+                                                       ') RETURNING "ZID"`))[0].ZID
             }
-            await query(`INSERT INTO "RezeptZutat" ("Rezept", "Zutat", "Menge") 
-                                            VALUES ('${recipeID}', '${dbIngredientId}', '${ingredient[0]}')`)
+            await query(`INSERT INTO "RezeptZutat" ("Rezept", "Zutat", "Menge")
+                         VALUES ('${recipeID}', '${dbIngredientId}', '${ingredient[0]}')`)
         }
 
         redirect("/")
@@ -117,6 +129,40 @@ export default function NewRecipePage() {
                             onChange={(e) => setLength(parseInt(e.target.value))}
                             required
                         />
+                    </div>
+                    <div className="mb-4 flex items-center justify-between">
+                        <div className="w-3/4">
+                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">
+                                Kategorie
+                            </label>
+                            <CategoryDropdown
+                                onChangeAction={(e) => setCategory(e.target.value)}
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">
+                                Lecker
+                            </label>
+                            <input
+                                type="checkbox"
+                                id="checkbox2"
+                                className="mx-2 w-6 h-6 align-middle ring ring-gray-500 accent-gray-800"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">
+                                Vegan
+                            </label>
+                            <input
+                                type="checkbox"
+                                id="checkbox2"
+                                defaultChecked={vegan}
+                                onChange={(e) => {
+                                    setVegan(!vegan)
+                                }}
+                                className="mx-2 w-6 h-6 align-middle ring ring-gray-500 accent-gray-800"
+                            />
+                        </div>
                     </div>
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="ingredients">
