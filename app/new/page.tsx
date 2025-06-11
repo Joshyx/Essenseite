@@ -87,7 +87,7 @@ export default function NewRecipePage() {
 
     return (
         <>
-            <NavigationBar username={getUserNameClientSide(document)}/>
+            <NavigationBar/>
             <main className="container mx-auto p-4">
                 <form onSubmit={handleSubmit} className="max-w-2xl mx-auto">
                     <h1 className="text-3xl font-bold mb-4 text-center">Neues Rezept erstellen</h1>

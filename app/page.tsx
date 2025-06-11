@@ -12,7 +12,7 @@ export default async function Home() {
 
     return (
         <div>
-            <NavigationBar username={username}/>
+            <NavigationBar/>
             <main className="container mx-auto p-4">
                 <h1 className="text-3xl font-bold mb-1">Hallo {username || "mein*e unbekannte*r Freund*in"} :)</h1>
                 <RecipesList user={user} recipes={recipes} favourites={favourites.map((fav) => fav.Rezept)}/>

@@ -15,7 +15,7 @@ export default function Zutaten() {
     }, [""])
     return (
         <div>
-            <NavigationBar username={getUserNameClientSide(document)}/>
+            <NavigationBar />
             <main className="container mx-auto p-4">
                 <div className="flex justify-between">
                     <h1 className="text-3xl font-bold mb-4">Zutaten</h1>

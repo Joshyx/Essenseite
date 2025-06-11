@@ -1,6 +1,6 @@
 'use client';
 
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {query} from "@/scripts/query";
 import {redirect} from "next/navigation";
 import {setCookie} from "@/scripts/cookies";
@@ -8,11 +8,6 @@ import NavigationBar from "@/components/NavigationBar";
 import {getUserNameClientSide} from "@/scripts/utils";
 
 export default function RegisterPage() {
-    const user = getUserNameClientSide(document)
-    if (user) {
-        redirect("/")
-    }
-
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [firstName, setFirstName] = useState('')
@@ -49,7 +44,7 @@ export default function RegisterPage() {
 
     return (
         <>
-            <NavigationBar username={getUserNameClientSide(document)}/>
+            <NavigationBar/>
             <div className="flex justify-center">
                 <form
                     onSubmit={handleSubmit}

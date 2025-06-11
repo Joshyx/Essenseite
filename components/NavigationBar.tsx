@@ -12,9 +12,14 @@ import {
     faUtensils
 } from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {randomInt} from "@/scripts/utils";
+import {getUserNameClientSide, randomInt} from "@/scripts/utils";
+import {useEffect, useState} from "react";
 
-export default function NavigationBar({username}: {username: string | undefined}) {
+export default function NavigationBar() {
+    const [username, setUsername] = useState<string | undefined>(undefined)
+    useEffect(() => {
+        setUsername(getUserNameClientSide(document))
+    }, [""])
     const icons = [faUtensils, faBurger, faBowlFood, faBreadSlice, faFish, faMugHot, faBeer, faCarrot]
     const randomIcon = icons[randomInt(0, icons.length - 1)]
     return (

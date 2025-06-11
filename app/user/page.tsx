@@ -9,7 +9,7 @@ export default async function Nutzer() {
     const user = await query('SELECT * FROM "Nutzer"')
     return (
         <div>
-            <NavigationBar username={await getCookie("username")}/>
+            <NavigationBar/>
             <main className="container mx-auto p-4">
                 <h1 className="text-3xl font-bold mb-4">Autoren</h1>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

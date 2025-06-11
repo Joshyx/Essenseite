@@ -37,7 +37,7 @@ export default async function RecipeDetail({params}: {params: Promise<{id: strin
 
     return (
         <div>
-            <NavigationBar username={await getCookie("username")}/>
+            <NavigationBar />
             <main className="container mx-auto p-4 flex justify-between">
                 <div>
                     <h1 className="text-3xl font-bold mb-4">{recipe.Name}</h1>
@@ -62,7 +62,7 @@ export default async function RecipeDetail({params}: {params: Promise<{id: strin
                 </div>
                 <div>
                     <ZutatPanel zutat={totalNutritionalValue} />
-                    <AboutAuthorPanel author={user}/>
+                    <AboutAuthorPanel author={user} fullInfo={false}/>
                     <div className="flex justify-end space-x-3 items-center">
                         <Link
                             href="/"
